@@ -1,23 +1,30 @@
 #' Estimate Standardized Regression Coefficients
-#' and Sampling Covariance Matrix
+#' and the Corresponding Sampling Covariance Matrix
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns an object of class `betadelta`
-#' which is a list with the following elements:
-#' \describe{
-#'   \item{call}{Function call.}
-#'   \item{type}{Standard error type.}
-#'   \item{beta}{Vector of standardized slopes.}
-#'   \item{vcov}{Sampling covariance matrix of the standardized slopes.}
-#'   \item{n}{Sample size.}
-#'   \item{p}{Number of regressors.}
-#'   \item{df}{\eqn{n - p - 1} degrees of freedom}
-#' }
+#' @return Returns an object
+#'   of class `betadelta` which is a list with the following elements:
+#'   \describe{
+#'     \item{call}{Function call.}
+#'     \item{args}{Function arguments.}
+#'     \item{lm_process}{Processed `lm` object.}
+#'     \item{gamma}{Asymptotic covariance matrix
+#'       of the sample covariance matrix.}
+#'     \item{acov}{Asymptotic covariance matrix
+#'       of the standardized slopes.}
+#'     \item{vcov}{Sampling covariance matrix
+#'       of the standardized slopes.}
+#'     \item{est}{Vector of standardized slopes.}
+#'   }
+#'
 #' @param object Object of class `lm`.
 #' @param type Character string.
-#'   If `type = "mvn"`, use the multivariate normal-theory approach.
-#'   If `type = "adf"`, use the asymptotic distribution-free approach.
+#'   If `type = "mvn"`,
+#'   use the multivariate normal-theory approach.
+#'   If `type = "adf"`,
+#'   use the asymptotic distribution-free approach.
+#'
 #' @references
 #' Jones, J. A., & Waller, N. G. (2015).
 #' The normal-theory and asymptotic distribution-free (ADF) covariance matrix
@@ -26,10 +33,17 @@
 #' *Psychometrika*, *80*(2), 365–378.
 #' \doi{10.1007/s11336-013-9380-y}
 #'
+#' Pesigan, I. J. A., Sun, R. W., & Cheung, S. F. (2023).
+#' betaDelta and betaSandwich:
+#' Confidence intervals for standardized regression coefficients in R.
+#' *Multivariate Behavioral Research*.
+#' \doi{10.1080/00273171.2023.2201277}
+#'
 #' Yuan, K.-H., & Chan, W. (2011).
 #' Biases and standard errors of standardized regression coefficients.
 #' *Psychometrika*, *76*(4), 670–690.
 #' \doi{10.1007/s11336-011-9224-6}
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -41,70 +55,52 @@
 #' confint(std, level = 0.95)
 #' @export
 #' @family Beta Delta Functions
-#' @keywords betaDelta
-BetaDelta <- function(object, type = "mvn") {
-  stopifnot(type %in% c("mvn", "adf"))
-  input <- .ProcessLM(object)
-  jcap <- .JacobianBetastarWRTVechSigma(
-    beta = input$beta,
-    sigmay = sqrt(input$sigmacap[1, 1]),
-    sigmax = sqrt(diag(input$sigmacap)[-1]),
-    invsigmacapx = chol2inv(
-      chol(input$sigmacap[2:input$k, 2:input$k, drop = FALSE])
-    ),
-    p = input$p,
-    k = input$k
-  )
-  sigmacap_consistent <- (
-    input$sigmacap * (
-      input$n - 1
-    ) / input$n
-  )
-  vechsigmacap_consistent <- .Vech(
-    sigmacap_consistent
-  )
-  pinv_of_dcap <- .PInvDmat(.DMat(input$k))
-  if (type == "adf") {
-    gammacapmvn_consistent <- .GammaN(
-      sigmacap = sigmacap_consistent,
-      pinv_of_dcap = pinv_of_dcap
+#' @keywords betaDelta std
+BetaDelta <- function(object,
+                      type = "mvn") {
+  stopifnot(
+    type %in% c(
+      "mvn",
+      "adf"
     )
-    gammacap <- .GammaADFUnbiased(
-      gammacapadf_consistent = .GammaADFConsistent(
-        d = .DofMat(
-          input$x,
-          center = colMeans(input$x),
-          n = input$n,
-          k = input$k
-        ),
-        vechsigmacap_consistent = vechsigmacap_consistent,
-        n = input$n
+  )
+  lm_process <- .ProcessLM(object)
+  gamma <- .Gamma(
+    object = lm_process,
+    type = type
+  )
+  acov <- .ACovDelta(
+    jcap = .JacobianBetastarWRTVechSigma(
+      beta = lm_process$beta,
+      sigmay = sqrt(lm_process$sigmacap[1, 1]),
+      sigmax = sqrt(diag(lm_process$sigmacap)[-1]),
+      invsigmacapx = chol2inv(
+        chol(
+          lm_process$sigmacap[
+            2:lm_process$k,
+            2:lm_process$k,
+            drop = FALSE
+          ]
+        )
       ),
-      gammacapmvn_consistent = gammacapmvn_consistent,
-      vechsigmacap_consistent = vechsigmacap_consistent,
-      n = input$n
-    )
-  }
-  if (type == "mvn") {
-    gammacap <- .GammaN(
-      sigmacap = input$sigmacap,
-      pinv_of_dcap = pinv_of_dcap
-    )
-  }
-  avcov <- .ACov(
-    jcap = jcap,
-    gammacap = gammacap
+      p = lm_process$p,
+      k = lm_process$k
+    ),
+    acov = gamma
   )
-  vcov <- (1 / input$n) * avcov
-  colnames(vcov) <- rownames(vcov) <- input$xnames
+  colnames(acov) <- rownames(acov) <- lm_process$xnames
+  vcov <- (1 / lm_process$n) * acov
   out <- list(
     call = match.call(),
-    type = type,
-    beta = input$betastar,
+    args = list(
+      object = object,
+      type = type
+    ),
+    lm_process = lm_process,
+    gamma = gamma,
+    acov = acov,
     vcov = vcov,
-    n = input$n,
-    p = input$p,
-    df = input$df
+    est = lm_process$betastar
   )
   class(out) <- c(
     "betadelta",

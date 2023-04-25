@@ -3,7 +3,7 @@
 \name{BetaDelta}
 \alias{BetaDelta}
 \title{Estimate Standardized Regression Coefficients
-and Sampling Covariance Matrix}
+and the Corresponding Sampling Covariance Matrix}
 \usage{
 BetaDelta(object, type = "mvn")
 }
@@ -11,25 +11,30 @@ BetaDelta(object, type = "mvn")
 \item{object}{Object of class \code{lm}.}
 
 \item{type}{Character string.
-If \code{type = "mvn"}, use the multivariate normal-theory approach.
-If \code{type = "adf"}, use the asymptotic distribution-free approach.}
+If \code{type = "mvn"},
+use the multivariate normal-theory approach.
+If \code{type = "adf"},
+use the asymptotic distribution-free approach.}
 }
 \value{
-Returns an object of class \code{betadelta}
-which is a list with the following elements:
+Returns an object
+of class \code{betadelta} which is a list with the following elements:
 \describe{
 \item{call}{Function call.}
-\item{type}{Standard error type.}
-\item{beta}{Vector of standardized slopes.}
-\item{vcov}{Sampling covariance matrix of the standardized slopes.}
-\item{n}{Sample size.}
-\item{p}{Number of regressors.}
-\item{df}{\eqn{n - p - 1} degrees of freedom}
+\item{args}{Function arguments.}
+\item{lm_process}{Processed \code{lm} object.}
+\item{gamma}{Asymptotic covariance matrix
+of the sample covariance matrix.}
+\item{acov}{Asymptotic covariance matrix
+of the standardized slopes.}
+\item{vcov}{Sampling covariance matrix
+of the standardized slopes.}
+\item{est}{Vector of standardized slopes.}
 }
 }
 \description{
 Estimate Standardized Regression Coefficients
-and Sampling Covariance Matrix
+and the Corresponding Sampling Covariance Matrix
 }
 \examples{
 object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -49,13 +54,24 @@ Theoretical extensions and finite sample behavior.
 \emph{Psychometrika}, \emph{80}(2), 365–378.
 \doi{10.1007/s11336-013-9380-y}
 
+Pesigan, I. J. A., Sun, R. W., & Cheung, S. F. (2023).
+betaDelta and betaSandwich:
+Confidence intervals for standardized regression coefficients in R.
+\emph{Multivariate Behavioral Research}.
+\doi{10.1080/00273171.2023.2201277}
+
 Yuan, K.-H., & Chan, W. (2011).
 Biases and standard errors of standardized regression coefficients.
 \emph{Psychometrika}, \emph{76}(4), 670–690.
 \doi{10.1007/s11336-011-9224-6}
+}
+\seealso{
+Other Beta Delta Functions: 
+\code{\link{DiffBetaDelta}()}
 }
 \author{
 Ivan Jacob Agaloos Pesigan
 }
 \concept{Beta Delta Functions}
 \keyword{betaDelta}
+\keyword{std}

@@ -2,12 +2,19 @@
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
+#' @return Returns a matrix of
+#'   standardized regression slopes,
+#'   standard errors,
+#'   test statistics,
+#'   p-values,
+#'   and
+#'   confidence intervals.
+#'
 #' @param x Object of class `betadelta`.
 #' @param ... additional arguments.
 #' @param alpha Significance level.
 #' @param digits Digits to print.
-#' @return Returns a matrix of standardized regression slopes,
-#'   standard errors, test statistics, p-values, and confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -22,7 +29,7 @@ print.betadelta <- function(x,
   base::print(x$call)
   cat(
     "\nStandardized regression slopes with",
-    toupper(x$type),
+    toupper(x$args$type),
     "standard errors:\n"
   )
   base::print(
@@ -40,12 +47,19 @@ print.betadelta <- function(x,
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
+#' @return Returns a matrix of
+#'   standardized regression slopes,
+#'   standard errors,
+#'   test statistics,
+#'   p-values,
+#'   and
+#'   confidence intervals.
+#'
 #' @param object Object of class `betadelta`.
 #' @param ... additional arguments.
 #' @param alpha Significance level.
 #' @param digits Digits to print.
-#' @return Returns a matrix of standardized regression slopes,
-#'   standard errors, test statistics, p-values, and confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -60,7 +74,7 @@ summary.betadelta <- function(object,
   base::print(object$call)
   cat(
     "\nStandardized regression slopes with",
-    toupper(object$type),
+    toupper(object$args$type),
     "standard errors:\n"
   )
   return(
@@ -78,10 +92,13 @@ summary.betadelta <- function(object,
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
+#' @return Returns a matrix of the
+#'   variance-covariance matrix
+#'   of standardized slopes.
+#'
 #' @param object Object of class `betadelta`.
 #' @param ... additional arguments.
-#' @return Returns a matrix of the variance-covariance matrix
-#'   of standardized slopes.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -90,18 +107,20 @@ summary.betadelta <- function(object,
 #' @keywords methods
 vcov.betadelta <- function(object,
                            ...) {
-  out <- object$vcov
-  rownames(out) <- colnames(out) <- names(object$beta)
-  return(out)
+  return(
+    object$vcov
+  )
 }
 
 #' Standardized Regression Slopes
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
+#' @return Returns a vector of standardized regression slopes.
+#'
 #' @param object Object of class `betadelta`.
 #' @param ... additional arguments.
-#' @return Returns a vector of standardized regression slopes.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -110,12 +129,16 @@ vcov.betadelta <- function(object,
 #' @keywords methods
 coef.betadelta <- function(object,
                            ...) {
-  object$beta
+  return(
+    object$est
+  )
 }
 
 #' Confidence Intervals for Standardized Regression Slopes
 #'
 #' @author Ivan Jacob Agaloos Pesigan
+#'
+#' @return Returns a matrix of confidence intervals.
 #'
 #' @param object Object of class `betadelta`.
 #' @param ... additional arguments.
@@ -124,7 +147,7 @@ coef.betadelta <- function(object,
 #'   either a vector of numbers or a vector of names.
 #'   If missing, all parameters are considered.
 #' @param level the confidence level required.
-#' @return Returns a matrix of confidence intervals.
+#'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
@@ -136,7 +159,9 @@ confint.betadelta <- function(object,
                               level = 0.95,
                               ...) {
   if (is.null(parm)) {
-    parm <- 1:object$p
+    parm <- seq_len(
+      object$lm_process$p
+    )
   }
   return(
     .BetaCI(
