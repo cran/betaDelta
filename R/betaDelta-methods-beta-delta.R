@@ -6,23 +6,28 @@
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param x Object of class `betadelta`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `x`.
 #' @param digits Digits to print.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
 #' print(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 print.betadelta <- function(x,
-                            alpha = c(0.05, 0.01, 0.001),
+                            alpha = NULL,
                             digits = 4,
                             ...) {
   cat("Call:\n")
@@ -51,23 +56,28 @@ print.betadelta <- function(x,
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param object Object of class `betadelta`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `object`.
 #' @param digits Digits to print.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
 #' summary(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 summary.betadelta <- function(object,
-                              alpha = c(0.05, 0.01, 0.001),
+                              alpha = NULL,
                               digits = 4,
                               ...) {
   cat("Call:\n")
@@ -103,8 +113,9 @@ summary.betadelta <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
 #' vcov(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 vcov.betadelta <- function(object,
                            ...) {
   return(
@@ -125,8 +136,9 @@ vcov.betadelta <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
 #' coef(std)
-#' @export
+#'
 #' @keywords methods
+#' @export
 coef.betadelta <- function(object,
                            ...) {
   return(
@@ -152,21 +164,30 @@ coef.betadelta <- function(object,
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 #' std <- BetaDelta(object)
 #' confint(std, level = 0.95)
-#' @export
+#'
 #' @keywords methods
+#' @export
 confint.betadelta <- function(object,
                               parm = NULL,
                               level = 0.95,
                               ...) {
   if (is.null(parm)) {
     parm <- seq_len(
-      object$lm_process$p
+      length(object$est)
     )
   }
+  ci <- .BetaCI(
+    object = object,
+    alpha = 1 - level[1]
+  )[parm, 6:7, drop = FALSE] # always t
+  varnames <- colnames(ci)
+  varnames <- gsub(
+    pattern = "%",
+    replacement = " %",
+    x = varnames
+  )
+  colnames(ci) <- varnames
   return(
-    .BetaCI(
-      object = object,
-      alpha = 1 - level[1]
-    )[parm, 5:6]
+    ci
   )
 }

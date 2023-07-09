@@ -13,18 +13,24 @@
 #'
 #' @param object Object of class `difbetadelta`.
 #' @param alpha Numeric vector.
-#'   Significance level.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @family Beta Delta Functions
 #' @keywords betaDelta diff ci internal
 #' @noRd
 .DiffBetaCI <- function(object,
-                        alpha = c(0.05, 0.01, 0.001)) {
+                        alpha = NULL) {
   stopifnot(
-    methods::is(
+    inherits(
       object,
       "diffbetadelta"
     )
+  )
+  if (is.null(alpha)) {
+    alpha <- object$args$alpha
+  }
+  stopifnot(
+    all(alpha > 0 & alpha < 1)
   )
   return(
     .CIWald(
@@ -32,8 +38,7 @@
       se = sqrt(diag(object$vcov)),
       theta = 0,
       alpha = alpha,
-      z = FALSE,
-      df = object$fit$lm_process$df
+      z = TRUE
     )
   )
 }

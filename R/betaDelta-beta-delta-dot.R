@@ -3,12 +3,8 @@
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns an object
-#'   of class `betadelta` which is a list with the following elements:
+#' @return Returns a a list with the following elements:
 #'   \describe{
-#'     \item{call}{Function call.}
-#'     \item{args}{Function arguments.}
-#'     \item{lm_process}{Processed `lm` object.}
 #'     \item{gamma}{Asymptotic covariance matrix
 #'       of the sample covariance matrix.}
 #'     \item{acov}{Asymptotic covariance matrix
@@ -18,14 +14,13 @@
 #'     \item{est}{Vector of standardized slopes.}
 #'   }
 #'
-#' @param object Object of class `lm`.
+#' @param lm_object object.
+#'   Output of the [.ProcessLM()] function.
 #' @param type Character string.
 #'   If `type = "mvn"`,
 #'   use the multivariate normal-theory approach.
 #'   If `type = "adf"`,
 #'   use the asymptotic distribution-free approach.
-#' @param alpha Numeric vector.
-#'   Significance level \eqn{\alpha}.
 #'
 #' @references
 #' Jones, J. A., & Waller, N. G. (2015).
@@ -46,52 +41,42 @@
 #' *Psychometrika*, *76*(4), 670–690.
 #' \doi{10.1007/s11336-011-9224-6}
 #'
-#' @examples
-#' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
-#' std <- BetaDelta(object)
-#' # Methods -------------------------------------------------------
-#' print(std)
-#' summary(std)
-#' coef(std)
-#' vcov(std)
-#' confint(std, level = 0.95)
-#'
 #' @family Beta Delta Functions
-#' @keywords betaDelta std
-#' @export
-BetaDelta <- function(object,
-                      type = "mvn",
-                      alpha = c(0.05, 0.01, 0.001)) {
-  stopifnot(
-    type %in% c(
-      "mvn",
-      "adf"
-    )
-  )
-  lm_process <- .ProcessLM(object)
-  std <- .BetaDelta(
-    lm_process = lm_process,
+#' @keywords betaDelta std internal
+#' @noRd
+.BetaDelta <- function(lm_process,
+                       type) {
+  gamma <- .Gamma(
+    object = lm_process,
     type = type
   )
-  out <- list(
-    call = match.call(),
-    args = list(
-      object = object,
-      type = type,
-      alpha = alpha
+  acov <- .ACovDelta(
+    jcap = .JacobianBetaStarWRTVechSigma(
+      beta = lm_process$beta,
+      sigmay = sqrt(lm_process$sigmacap[1, 1]),
+      sigmax = sqrt(diag(lm_process$sigmacap)[-1]),
+      invsigmacapx = chol2inv(
+        chol(
+          lm_process$sigmacap[
+            2:lm_process$k,
+            2:lm_process$k,
+            drop = FALSE
+          ]
+        )
+      ),
+      p = lm_process$p,
+      k = lm_process$k
     ),
-    lm_process = lm_process,
-    gamma = std$gamma,
-    acov = std$acov,
-    vcov = std$vcov,
-    est = lm_process$betastar
+    acov = gamma
   )
-  attributes(out)$mi <- FALSE
-  class(out) <- c(
-    "betadelta",
-    class(out)
-  )
+  colnames(acov) <- rownames(acov) <- lm_process$xnames
+  vcov <- (1 / lm_process$n) * acov
   return(
-    out
+    list(
+      gamma = gamma,
+      acov = acov,
+      vcov = vcov,
+      est = lm_process$betastar
+    )
   )
 }

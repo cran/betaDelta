@@ -5,7 +5,7 @@
 \title{Estimate Standardized Regression Coefficients
 and the Corresponding Sampling Covariance Matrix}
 \usage{
-BetaDelta(object, type = "mvn")
+BetaDelta(object, type = "mvn", alpha = c(0.05, 0.01, 0.001))
 }
 \arguments{
 \item{object}{Object of class \code{lm}.}
@@ -15,6 +15,9 @@ If \code{type = "mvn"},
 use the multivariate normal-theory approach.
 If \code{type = "adf"},
 use the asymptotic distribution-free approach.}
+
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.}
 }
 \value{
 Returns an object
@@ -45,6 +48,7 @@ summary(std)
 coef(std)
 vcov(std)
 confint(std, level = 0.95)
+
 }
 \references{
 Jones, J. A., & Waller, N. G. (2015).

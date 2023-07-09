@@ -6,13 +6,17 @@
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param x Object of class `diffbetadelta`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `x`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -20,10 +24,11 @@
 #' std <- BetaDelta(object)
 #' diff <- DiffBetaDelta(std)
 #' print(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 print.diffbetadelta <- function(x,
-                                alpha = c(0.05, 0.01, 0.001),
+                                alpha = NULL,
                                 digits = 4,
                                 ...) {
   cat("Call:\n")
@@ -52,13 +57,17 @@ print.diffbetadelta <- function(x,
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
+#'   degrees of freedom,
 #'   p-values,
 #'   and
 #'   confidence intervals.
 #'
 #' @param object Object of class `diffbetadelta`.
 #' @param ... additional arguments.
-#' @param alpha Significance level.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
+#'   If `alpha = NULL`,
+#'   use the argument `alpha` used in `object`.
 #' @param digits Digits to print.
 #'
 #' @examples
@@ -66,10 +75,11 @@ print.diffbetadelta <- function(x,
 #' std <- BetaDelta(object)
 #' diff <- DiffBetaDelta(std)
 #' summary(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 summary.diffbetadelta <- function(object,
-                                  alpha = c(0.05, 0.01, 0.001),
+                                  alpha = NULL,
                                   digits = 4,
                                   ...) {
   cat("Call:\n")
@@ -107,8 +117,9 @@ summary.diffbetadelta <- function(object,
 #' std <- BetaDelta(object)
 #' diff <- DiffBetaDelta(std)
 #' vcov(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 vcov.diffbetadelta <- function(object,
                                ...) {
   return(
@@ -130,8 +141,9 @@ vcov.diffbetadelta <- function(object,
 #' std <- BetaDelta(object)
 #' diff <- DiffBetaDelta(std)
 #' coef(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 coef.diffbetadelta <- function(object,
                                ...) {
   return(
@@ -159,8 +171,9 @@ coef.diffbetadelta <- function(object,
 #' std <- BetaDelta(object)
 #' diff <- DiffBetaDelta(std)
 #' confint(diff)
-#' @export
+#'
 #' @keywords methods
+#' @export
 confint.diffbetadelta <- function(object,
                                   parm = NULL,
                                   level = 0.95,
@@ -170,10 +183,18 @@ confint.diffbetadelta <- function(object,
       length(object$est)
     )
   }
+  ci <- .DiffBetaCI(
+    object = object,
+    alpha = 1 - level[1]
+  )[parm, 5:6, drop = FALSE] # always z
+  varnames <- colnames(ci)
+  varnames <- gsub(
+    pattern = "%",
+    replacement = " %",
+    x = varnames
+  )
+  colnames(ci) <- varnames
   return(
-    .DiffBetaCI(
-      object = object,
-      alpha = 1 - level[1]
-    )[parm, 5:6]
+    ci
   )
 }

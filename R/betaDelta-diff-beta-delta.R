@@ -8,6 +8,7 @@
 #'   \describe{
 #'     \item{call}{Function call.}
 #'     \item{fit}{The argument `object`.}
+#'     \item{args}{Function arguments.}
 #'     \item{vcov}{Sampling covariance matrix of
 #'       differences of standardized slopes.}
 #'     \item{est}{Vector of
@@ -16,7 +17,9 @@
 #'
 #' @param object Object of class `betadelta`,
 #'   that is,
-#'   the output of the `BetaDelta()` function.
+#'   the output of the [BetaDelta()] function.
+#' @param alpha Numeric vector.
+#'   Significance level \eqn{\alpha}.
 #'
 #' @examples
 #' object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
@@ -28,12 +31,14 @@
 #' coef(diff)
 #' vcov(diff)
 #' confint(diff, level = 0.95)
-#' @export
+#'
 #' @family Beta Delta Functions
 #' @keywords betaDelta diff
-DiffBetaDelta <- function(object) {
+#' @export
+DiffBetaDelta <- function(object,
+                          alpha = c(0.05, 0.01, 0.001)) {
   stopifnot(
-    methods::is(
+    inherits(
       object,
       "betadelta"
     )
@@ -43,16 +48,22 @@ DiffBetaDelta <- function(object) {
   }
   est <- object$lm_process$dif_betastar
   acov <- .ACovDelta(
-    jcap = .JacobianDiffBetastar(
+    jcap = .JacobianDiffBetaStar(
       p = object$lm_process$p
     ),
     acov = object$acov
   )
-  colnames(acov) <- rownames(acov) <- names(object$lm_process$dif_betastar)
+  colnames(acov) <- rownames(acov) <- names(
+    object$lm_process$dif_betastar
+  )
   vcov <- (1 / object$lm_process$n) * acov
   out <- list(
     call = match.call(),
     fit = object,
+    args = list(
+      object = object,
+      alpha = alpha
+    ),
     acov = acov,
     vcov = vcov,
     est = est

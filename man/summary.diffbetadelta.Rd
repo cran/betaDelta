@@ -4,12 +4,15 @@
 \alias{summary.diffbetadelta}
 \title{Summary Method for an Object of Class \code{diffbetadelta}}
 \usage{
-\method{summary}{diffbetadelta}(object, alpha = c(0.05, 0.01, 0.001), digits = 4, ...)
+\method{summary}{diffbetadelta}(object, alpha = NULL, digits = 4, ...)
 }
 \arguments{
 \item{object}{Object of class \code{diffbetadelta}.}
 
-\item{alpha}{Significance level.}
+\item{alpha}{Numeric vector.
+Significance level \eqn{\alpha}.
+If \code{alpha = NULL},
+use the argument \code{alpha} used in \code{object}.}
 
 \item{digits}{Digits to print.}
 
@@ -20,6 +23,7 @@ Returns a matrix of
 standardized regression slopes,
 standard errors,
 test statistics,
+degrees of freedom,
 p-values,
 and
 confidence intervals.
@@ -32,6 +36,7 @@ object <- lm(QUALITY ~ NARTIC + PCTGRT + PCTSUPP, data = nas1982)
 std <- BetaDelta(object)
 diff <- DiffBetaDelta(std)
 summary(diff)
+
 }
 \author{
 Ivan Jacob Agaloos Pesigan
