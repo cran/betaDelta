@@ -1,7 +1,7 @@
-31e489bf5d9f686b66889aeaccc15c90 *DESCRIPTION
+4c58a5a736f01fc6a8ba70ab3a1cc266 *DESCRIPTION
 0c864b2b29818a5afc91de86b712133f *LICENSE
 286eaed4d5bb4b76fe27ccdeae3ed9ec *NAMESPACE
-29214d39c8c0a0bb615a81ba24888f0c *NEWS.md
+baafe8e47510257f65f277cff558c607 *NEWS.md
 16441a0de7a741291aff6c618c28c708 *R/betaDelta-beta-ci-dot.R
 8f5f8c1fa1a95d6231fead92c42631f5 *R/betaDelta-beta-delta-dot.R
 95b83e636064174aa482764f2c86795c *R/betaDelta-beta-delta.R
@@ -35,7 +35,7 @@ b64acb36cc8fc9ec668c601d9cef2d3f *R/strRegression-p-cor-sq-dot.R
 6229345efd410db16611ff5869cdab1e *R/strRegression-r-sq-of-sigma-dot.R
 271a43ea766f299c64f17df082724ba5 *R/strRegression-s-p-cor-dot.R
 b9b5185ff26938d64258c79a99e52a62 *R/wald-ci-wald-dot.R
-613ece007398110e1f05f7a9e0b02bc2 *R/wald-probs-of-alpha-dot.R
+25b8a4735fb30ec697062def03e2feee *R/wald-probs-of-alpha-dot.R
 7080893e02c49cd296d4424b9be55069 *build/partial.rdb
 b7e66fce69e9127d9e23f08141e25806 *data/nas1982.rda
 eac4051488ba6f6c1b21b3cf6a082d76 *inst/CITATION
@@ -60,9 +60,3 @@ b72e33e52ab291090cf5d5d3441362f6 *tests/testthat/test-betaDelta-beta-delta-mvn.R
 960227399b3686a49e8132aa79eda7ca *tests/testthat/test-betaDelta-diff-beta-delta-methods.R
 54f30b74cb96f2356e6494f384beffe2 *tests/testthat/test-betaDelta-diff-beta-delta.R
 cd18e114f0adce0ff5ba2c619c3beff6 *tests/testthat/test-zzz-coverage.R
-90347330c8770d562f7f8abe556785b9 *tools/clone.sh
-66f7e74fcda834373ce5ffbfe8bc3eea *tools/make-config.R
-2aa3a676db350ddafb83d04168af1d6f *tools/make-packages.R
-c69d6c208a4914652ba2bb19915351ea *tools/make-project.R
-bae9161cda6c8fa00b9fad3a5b92c765 *tools/project.R
-de104874a8e06de49a804aaa93699cd4 *tools/secrets.R

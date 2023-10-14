@@ -1,3 +1,9 @@
+# betaDelta 1.0.3
+
+## Patch
+
+* Minor documentation edits.
+
 # betaDelta 1.0.2
 
 ## Patch
