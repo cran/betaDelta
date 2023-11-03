@@ -1,3 +1,7 @@
+# betaDelta 1.0.4
+
+* Added the `Delta()` and `DeltaGeneric()` functions.
+
 # betaDelta 1.0.3
 
 ## Patch
