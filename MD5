@@ -1,7 +1,7 @@
-f4d7c3002ad5c88d635cc636afa59032 *DESCRIPTION
+c3d2c2a83cfa19e9f343dda29c9b43e3 *DESCRIPTION
 0c864b2b29818a5afc91de86b712133f *LICENSE
 ce355070e533aaa20850e0b290b374d9 *NAMESPACE
-c0caa719a6c73053375758ae0b856794 *NEWS.md
+2f0faa56bcca0f8ff374a5b43c75d3ce *NEWS.md
 e921238ef4f0558a4422e789aba75f75 *R/betaDelta-beta-ci-dot.R
 8f5f8c1fa1a95d6231fead92c42631f5 *R/betaDelta-beta-delta-dot.R
 95b83e636064174aa482764f2c86795c *R/betaDelta-beta-delta.R
@@ -40,14 +40,14 @@ b64acb36cc8fc9ec668c601d9cef2d3f *R/strRegression-p-cor-sq-dot.R
 271a43ea766f299c64f17df082724ba5 *R/strRegression-s-p-cor-dot.R
 b9b5185ff26938d64258c79a99e52a62 *R/wald-ci-wald-dot.R
 25b8a4735fb30ec697062def03e2feee *R/wald-probs-of-alpha-dot.R
-8faf250d78a120ba4c7ea2186efddd24 *build/partial.rdb
-8006f057ab615c21e0d0c83db3d97069 *data/nas1982.rda
+20c8d3f97d93e2e318a22508275b5a02 *build/partial.rdb
+ed948441fb6dcb4b9f3bed9a10208ee7 *data/nas1982.rda
 eac4051488ba6f6c1b21b3cf6a082d76 *inst/CITATION
 67fb0cbc86df94dc09f4f0e435604ebc *man/BetaDelta.Rd
 1e791776e8decd56ed43314f7510a66d *man/Delta.Rd
 7d1bde81ef9d4640d74bbd5a79fb3fc5 *man/DeltaGeneric.Rd
 575d79b1d88f83e04f4b98f0386903bb *man/DiffBetaDelta.Rd
-03b5133945640f9a5d4c819ba0dcff02 *man/betaDelta-package.Rd
+b2d8fa59cf88a369cf996984b9427796 *man/betaDelta-package.Rd
 479adcb6b037b9fef22038c417fb4016 *man/coef.betadelta.Rd
 b4be91eac3d67f01ca9dce320d43178b *man/coef.deltamethod.Rd
 63467bb85ec4509a16255108473c1717 *man/coef.diffbetadelta.Rd
