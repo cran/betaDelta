@@ -2,7 +2,7 @@
 #'
 #' @author Ivan Jacob Agaloos Pesigan
 #'
-#' @return Returns a matrix of
+#' @return Prints a matrix of
 #'   standardized regression slopes,
 #'   standard errors,
 #'   test statistics,
@@ -31,19 +31,10 @@ print.diffbetadelta <- function(x,
                                 alpha = NULL,
                                 digits = 4,
                                 ...) {
-  cat("Call:\n")
-  base::print(x$call)
-  cat(
-    "\nDifference between standardized regression coefficients with",
-    toupper(x$fit$args$type),
-    "standard errors:\n"
-  )
-  base::print(
-    round(
-      .DiffBetaCI(
-        object = x,
-        alpha = alpha
-      ),
+  print.summary.diffbetadelta(
+    summary.diffbetadelta(
+      object = x,
+      alpha = alpha,
       digits = digits
     )
   )
@@ -82,6 +73,47 @@ summary.diffbetadelta <- function(object,
                                   alpha = NULL,
                                   digits = 4,
                                   ...) {
+  ci <- .DiffBetaCI(
+    object = object,
+    alpha = alpha
+  )
+  print_summary <- round(
+    x = ci,
+    digits = digits
+  )
+  attr(
+    x = ci,
+    which = "fit"
+  ) <- object
+  attr(
+    x = ci,
+    which = "print_summary"
+  ) <- print_summary
+  attr(
+    x = ci,
+    which = "alpha"
+  ) <- alpha
+  attr(
+    x = ci,
+    which = "digits"
+  ) <- digits
+  class(ci) <- "summary.diffbetadelta"
+  ci
+}
+
+#' @noRd
+#' @keywords internal
+#' @exportS3Method print summary.diffbetadelta
+print.summary.diffbetadelta <- function(x,
+                                        ...) {
+  print_summary <- attr(
+    x = x,
+    which = "print_summary"
+  )
+  object <- attr(
+    x = x,
+    which = "fit"
+  )
   cat("Call:\n")
   base::print(object$call)
   cat(
@@ -89,15 +121,8 @@ summary.diffbetadelta <- function(object,
     toupper(object$fit$args$type),
     "standard errors:\n"
   )
-  return(
-    round(
-      .DiffBetaCI(
-        object = object,
-        alpha = alpha
-      ),
-      digits = digits
-    )
-  )
+  print(print_summary)
+  invisible(x)
 }
 
 #' Sampling Covariance Matrix of
@@ -122,9 +147,7 @@ summary.diffbetadelta <- function(object,
 #' @export
 vcov.diffbetadelta <- function(object,
                                ...) {
-  return(
-    object$vcov
-  )
+  object$vcov
 }
 
 #' Differences of Standardized Regression Slopes
@@ -146,9 +169,7 @@ vcov.diffbetadelta <- function(object,
 #' @export
 coef.diffbetadelta <- function(object,
                                ...) {
-  return(
-    object$est
-  )
+  object$est
 }
 
 #' Confidence Intervals for Differences
@@ -194,7 +215,5 @@ confint.diffbetadelta <- function(object,
     x = varnames
   )
   colnames(ci) <- varnames
-  return(
-    ci
-  )
+  ci
 }

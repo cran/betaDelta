@@ -39,8 +39,8 @@ DiffBetaDelta <- function(object,
                           alpha = c(0.05, 0.01, 0.001)) {
   stopifnot(
     inherits(
-      object,
-      "betadelta"
+      x = object,
+      what = "betadelta"
     )
   )
   if (object$lm_process$p < 2) {
@@ -72,7 +72,5 @@ DiffBetaDelta <- function(object,
     "diffbetadelta",
     class(out)
   )
-  return(
-    out
-  )
+  out
 }

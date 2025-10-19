@@ -24,7 +24,7 @@
 #' @param func R function.
 #'   1. The first argument `x` is the argument `coef`.
 #'   2. The function algebraically manipulates `coef`
-#'      to return at a new numeric vector.
+#'      to return a new numeric vector.
 #'      It is best to have a named vector as an output.
 #'   3. The function can take additional named arguments
 #'      passed using `...`.
@@ -50,7 +50,7 @@
 #' func <- function(x) {
 #'   y <- exp(x)
 #'   names(y) <- paste0("exp", "(", names(x), ")")
-#'   return(y[-1])
+#'   y[-1]
 #' }
 #' Delta(
 #'   coef = coef(object),
@@ -124,7 +124,5 @@ Delta <- function(coef,
     "deltamethod",
     class(out)
   )
-  return(
-    out
-  )
+  out
 }

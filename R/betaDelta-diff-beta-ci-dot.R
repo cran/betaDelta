@@ -20,25 +20,17 @@
 #' @noRd
 .DiffBetaCI <- function(object,
                         alpha = NULL) {
-  stopifnot(
-    inherits(
-      object,
-      "diffbetadelta"
-    )
-  )
   if (is.null(alpha)) {
     alpha <- object$args$alpha
   }
   stopifnot(
     all(alpha > 0 & alpha < 1)
   )
-  return(
-    .CIWald(
-      object$est,
-      se = sqrt(diag(object$vcov)),
-      theta = 0,
-      alpha = alpha,
-      z = TRUE
-    )
+  .CIWald(
+    object$est,
+    se = sqrt(diag(object$vcov)),
+    theta = 0,
+    alpha = alpha,
+    z = TRUE
   )
 }
